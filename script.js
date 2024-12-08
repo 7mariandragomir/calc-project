@@ -200,10 +200,11 @@ function operate(op, n1, n2) {
             return n1 + n2;
         case '-':
             return n1 - n2;
-        case '/':
+        case '÷':
             console.log(num1 / num2);
             return n1 / n2;
-        case 'x': 
+        case '×': 
+        console.log(n1 * n2);
             return n1 * n2;
     }
 }
