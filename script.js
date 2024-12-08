@@ -1,5 +1,5 @@
 let num1;
-let updateNum2 = false;
+let newCalc = true;
 let num2;
 let operator;
 let displayValue = '';
@@ -116,8 +116,14 @@ function drawCalculator() {
 
         // handle behavior of button
         element.addEventListener('click', e => {
-            if(item.type === 'value') {updateMainDisplay(item.value)}
-            else {
+            if(item.type === 'value') {
+                if(newCalc) {
+                    updateMainDisplay('clear');
+                    displaySec.innerHTML = displayValue;
+                }
+                updateMainDisplay(item.value);
+                newCalc = false;
+            } else {
                 switch(item.value) {
                     case '.': 
                         (displayValue.includes('.')) ? updateMainDisplay('') : updateMainDisplay(item.value);
@@ -149,6 +155,16 @@ function drawCalculator() {
                             operator = item.value;
                         };
                         break
+                    case '=':
+                        num1 = Number(displayValue.split(operator)[0]);
+                        num2 = Number(displayValue.split(operator)[1]);
+                        let result = operate(operator, num1, num2);
+
+                        displaySec.innerHTML = displayValue;
+                        updateMainDisplay('clear');
+
+                        updateMainDisplay(result);
+                        newCalc = true;
                 }
             }
 
@@ -166,6 +182,7 @@ function updateMainDisplay(input) {
     if(input ==='clear') {
         display.innerHTML = ''; 
         operator = undefined;
+        newCalc = true;
     } else {
         display.innerHTML += input;
     }
@@ -176,19 +193,17 @@ function updateMainDisplay(input) {
 const btns = document.querySelectorAll('.button');
 
 // function to operate
-function operate(operator, num1, num2) {
+function operate(op, n1, n2) {
 
-    switch(operator) {
+    switch(op) {
         case '+':
-            return num1 + num2;
+            return n1 + n2;
         case '-':
-            return num1 - num2;
+            return n1 - n2;
         case '/':
             console.log(num1 / num2);
-            return num1 / num2;
+            return n1 / n2;
         case 'x': 
-            return num1 * num2;
+            return n1 * n2;
     }
 }
-
-operate('/', 423, 53);
