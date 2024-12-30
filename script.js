@@ -7,15 +7,16 @@ const displaySec = document.getElementById('display-sec');
 
 // array with each button in the calculator
 let calcButtons = [
-    { type: 'operator', id: 'add', value: '+', accessKey: '+' },
-    { type: 'operator', id: 'subtract', value: '-', accessKey: '-' },
-    { type: 'operator', id: 'multiply', value: '×', accessKey: 'x' },
-    { type: 'operator', id: 'divide', value: '÷', accessKey: '/' },
-    { type: 'operator', id: 'result', value: '=', accessKey: '=' },
-    { type: 'operator', id: 'clear', value: 'clear', accessKey: 'c' },
-    { type: 'operator', id: 'dot', value: '.', accessKey: '.' },
-    { type: 'value', id: 'zero', value: 0, accessKey: '0' },
-    ...Array.from({length: 9}, (_, i) => ({type:'value', value: i+1, accessKey: (i+1).toString()}))
+    { type: 'operator', id: 'add', value: '+'},
+    { type: 'operator', id: 'subtract', value: '-'},
+    { type: 'operator', id: 'multiply', value: '×'},
+    { type: 'operator', id: 'divide', value: '÷'},
+    { type: 'operator', id: 'result', value: '='},
+    { type: 'operator', id: 'clear', value: 'clear'},
+    { type: 'operator', id: 'del', value: '⬅'},
+    { type: 'operator', id: 'dot', value: '.'},
+    { type: 'value', id: 'zero', value: 0},
+    ...Array.from({length: 9}, (_, i) => ({type:'value', value: i+1}))
 ]
 
 // function to draw the calculator
@@ -104,6 +105,9 @@ function handleOperator(value) {
             break;
         case 'clear': 
             clearMainDisplay();
+            break;
+        case '⬅':
+            eraseLast();
             break;
         case '=': 
             let result = calculateResults(displayValue);
