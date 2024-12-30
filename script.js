@@ -1,5 +1,4 @@
 let num1, num2, operator;
-let newCalc = true;
 let displayValue = '';
 
 const calc = document.getElementById('calculator');
@@ -39,9 +38,7 @@ drawCalculator();
 // Function to handle clicks
 function handleButtonClick(item) {
     if(item.type === 'value') {
-        if(newCalc) clearMainDisplay();
         updateMainDisplay(item.value);
-        newCalc = false;
     } else {
         handleOperator(item.value);
     }
@@ -62,7 +59,6 @@ function clearMainDisplay() {
     display.innerHTML = '';
     displayValue = '';
     operator = undefined;
-    // newCalc = true;
 };
 
 
