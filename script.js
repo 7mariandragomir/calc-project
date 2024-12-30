@@ -35,6 +35,33 @@ function drawCalculator() {
 
 drawCalculator();
 
+
+// handle keyboard inputs
+window.addEventListener('keydown', (e)=> {
+    const regNum = /\d+/g;
+    const regOp = /[×÷/=+\\-]/g;
+    console.log(e);
+
+
+    if(regNum.test(e.key)) {
+        updateMainDisplay(e.key)
+    } else if(regOp.test(e.key)) {
+        handleOperator(e.key);
+    } else {
+        switch(e.key) {
+            case 'Enter':
+                handleOperator('=');
+                break;
+            case '/':
+                handleOperator('')
+                break;
+            case 'Backspace':
+                eraseLast();
+                break;
+        }
+    }
+});
+
 // Function to handle clicks
 function handleButtonClick(item) {
     if(item.type === 'value') {
@@ -50,6 +77,11 @@ function updateMainDisplay(input) {
     display.innerHTML += input; 
     displayValue = display.innerHTML;
 }; 
+
+function eraseLast() {
+    displayValue = displayValue.slice(0, -1);
+    display.innerHTML = displayValue;
+}
 
 function updateSecDisplay() {
     displaySec.innerHTML = displayValue;
@@ -74,7 +106,17 @@ function handleOperator(value) {
             let result = calculateResults(displayValue);
             updateSecDisplay();
             clearMainDisplay();
-            updateMainDisplay(result);
+        
+            // add limit of 4 decimals if there are more than 4
+            if(result.includes('.')) {
+                let[intgPart, decmPart] = result.split('.');
+                if(decmPart.length > 4){
+                    updateMainDisplay(parseFloat(result).toFixed(4));
+                } else updateMainDisplay(result);
+            } else {
+                updateMainDisplay(result);
+            };
+            
             break;
         default: 
             if(displayValue) {
@@ -94,7 +136,11 @@ function operate(a, operator, b) {
     switch (operator) {
         case '×':
             return a * b;
+        case 'x':
+            return a * b;
         case '÷':
+            return a / b;
+        case '/':
             return a / b;
         case '+':
             return a + b;
@@ -106,9 +152,9 @@ function operate(a, operator, b) {
 }
 
 function calculateResults(input = '2+9÷3-5×2×3') {
-    arr = input.match(/\d+|[×÷+\-]/g);
+    arr = input.match(/\d+|[×÷/x+\-]/g);
     const operators = [
-        ['×', '÷'], // calc first
+        ['×', '÷', '/', 'x'], // calc first
         ['+', '-']  // calc after
     ];
 
@@ -132,5 +178,5 @@ function calculateResults(input = '2+9÷3-5×2×3') {
             }
         }
     }
-    return arr;
+    return arr[0];
 }
