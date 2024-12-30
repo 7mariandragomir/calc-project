@@ -53,7 +53,10 @@ window.addEventListener('keydown', (e)=> {
                 handleOperator('=');
                 break;
             case '/':
-                handleOperator('')
+                handleOperator('/');
+                break;
+            case 'x':
+                handleOperator('x');
                 break;
             case 'Backspace':
                 eraseLast();
