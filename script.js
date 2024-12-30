@@ -39,7 +39,7 @@ drawCalculator();
 // handle keyboard inputs
 window.addEventListener('keydown', (e)=> {
     const regNum = /\d+/g;
-    const regOp = /[×÷/=+\\-]/g;
+    const regOp = /[×÷=+\\-]/g;
     console.log(e);
 
 
@@ -53,10 +53,10 @@ window.addEventListener('keydown', (e)=> {
                 handleOperator('=');
                 break;
             case '/':
-                handleOperator('/');
+                handleOperator('÷');
                 break;
             case 'x':
-                handleOperator('x');
+                handleOperator('×');
                 break;
             case 'Backspace':
                 eraseLast();
@@ -139,11 +139,7 @@ function operate(a, operator, b) {
     switch (operator) {
         case '×':
             return a * b;
-        case 'x':
-            return a * b;
         case '÷':
-            return a / b;
-        case '/':
             return a / b;
         case '+':
             return a + b;
