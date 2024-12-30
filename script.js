@@ -1,175 +1,34 @@
-let num1;
+let num1, num2, operator;
 let newCalc = true;
-let num2;
-let operator;
 let displayValue = '';
+
 const calc = document.getElementById('calculator');
 const display = document.getElementById('display-main');
 const displaySec = document.getElementById('display-sec');
 
 // array with each button in the calculator
 let calcButtons = [
-    {
-        'type': 'operator',
-        'id': 'add',
-        'value': '+',
-        'accessKey': '+'
-    },
-    {
-        'type': 'operator',
-        'id': 'substract',
-        'value': '-',
-        'accessKey': '-'
-    },
-    {
-        'type': 'operator',
-        'id': 'multiply',
-        'value': '×',
-        'accessKey': 'x'
-    },
-    {
-        'type': 'operator',
-        'id': 'divide',
-        'value': '÷',
-        'accessKey': '/'
-    },
-    {
-        'type': 'operator',
-        'id': 'result',
-        'value': '=',
-        'accessKey': '='
-    },
-    {
-        'type': 'operator',
-        'id': 'clear',
-        'value': 'clear',
-        'accessKey': 'c'
-    },
-    {
-        'type': 'operator',
-        'id': 'dot',
-        'value': '.',
-        'accessKey': '.'
-    },
-    {
-        'type': 'value',
-        'id': 'zero',
-        'value': 0,
-        'accessKey': '0'
-    },
-    {
-        'type': 'value',
-        'value': 1,
-        'accessKey': '1'
-    },
-    {
-        'type': 'value',
-        'value': 2,
-        'accessKey': '2'
-    },
-    {
-        'type': 'value',
-        'value': 3,
-        'accessKey': '3'
-    },
-    {
-        'type': 'value',
-        'value': 4,
-        'accessKey': '4'
-    },
-    {
-        'type': 'value',
-        'value': 5,
-        'accessKey': '5'
-    },
-    {
-        'type': 'value',
-        'value': 6,
-        'accessKey': '6'
-    },
-    {
-        'type': 'value',
-        'value': 7,
-        'accessKey': '7'
-    },
-    {
-        'type': 'value',
-        'value': 8,
-        'accessKey': '8'
-    },
-    {
-        'type': 'value',
-        'value': 9,
-        'accessKey': '9'
-    }
+    { type: 'operator', id: 'add', value: '+', accessKey: '+' },
+    { type: 'operator', id: 'subtract', value: '-', accessKey: '-' },
+    { type: 'operator', id: 'multiply', value: '×', accessKey: 'x' },
+    { type: 'operator', id: 'divide', value: '÷', accessKey: '/' },
+    { type: 'operator', id: 'result', value: '=', accessKey: '=' },
+    { type: 'operator', id: 'clear', value: 'clear', accessKey: 'c' },
+    { type: 'operator', id: 'dot', value: '.', accessKey: '.' },
+    { type: 'value', id: 'zero', value: 0, accessKey: '0' },
+    ...Array.from({length: 9}, (_, i) => ({type:'value', value: i+1, accessKey: (i+1).toString()}))
 ]
 
 // function to draw the calculator
 function drawCalculator() {
 
     calcButtons.forEach(item =>{
-
         let element = document.createElement('div');
-        if('id' in item) {element.setAttribute('id', item.id);}
+        if(item.id) {element.id = item.id}
         element.classList.add('button');
         element.textContent = item.value;
 
-        // handle behavior of button
-        element.addEventListener('click', e => {
-            if(item.type === 'value') {
-                if(newCalc) {
-                    updateMainDisplay('clear');
-                    displaySec.innerHTML = displayValue;
-                }
-                updateMainDisplay(item.value);
-                newCalc = false;
-            } else {
-                switch(item.value) {
-                    case '.': 
-                        (displayValue.includes('.')) ? updateMainDisplay('') : updateMainDisplay(item.value);
-                        break;
-                    case 'clear': 
-                        updateMainDisplay(item.value);
-                        break;
-                    case '÷': 
-                        if(! displayValue == '' & operator == undefined) {
-                            updateMainDisplay(item.value);
-                            operator = item.value;
-                        };
-                        break
-                    case '×': 
-                        if(! displayValue == '' & operator == undefined) {
-                            updateMainDisplay(item.value);
-                            operator = item.value;
-                        };
-                        break
-                    case '-':
-                        if(! displayValue == '' & operator == undefined) {
-                            updateMainDisplay(item.value);
-                            operator = item.value;
-                        };
-                        break
-                    case '+': 
-                        if(! displayValue == '' & operator == undefined) {
-                            updateMainDisplay(item.value);
-                            operator = item.value;
-                        };
-                        break
-                    case '=':
-                        num1 = Number(displayValue.split(operator)[0]);
-                        num2 = Number(displayValue.split(operator)[1]);
-                        let result = operate(operator, num1, num2);
-
-                        displaySec.innerHTML = displayValue;
-                        updateMainDisplay('clear');
-
-                        updateMainDisplay(result);
-                        newCalc = true;
-                }
-            }
-
-        });
-
+        element.addEventListener('click', ()=> handleButtonClick(item));
         calc.appendChild(element);
 
     })
@@ -177,34 +36,105 @@ function drawCalculator() {
 
 drawCalculator();
 
+// Function to handle clicks
+function handleButtonClick(item) {
+    if(item.type === 'value') {
+        if(newCalc) clearMainDisplay();
+        updateMainDisplay(item.value);
+        newCalc = false;
+    } else {
+        handleOperator(item.value);
+    }
+};
+
+
 //function to update the displays
 function updateMainDisplay(input) {
-    if(input ==='clear') {
-        display.innerHTML = ''; 
-        operator = undefined;
-        newCalc = true;
-    } else {
-        display.innerHTML += input;
-    }
-
+    display.innerHTML += input; 
     displayValue = display.innerHTML;
+}; 
+
+function updateSecDisplay() {
+    displaySec.innerHTML = displayValue;
 }
 
-const btns = document.querySelectorAll('.button');
+function clearMainDisplay() {
+    display.innerHTML = '';
+    displayValue = '';
+    operator = undefined;
+    // newCalc = true;
+};
+
+
+function handleOperator(value) {
+    switch(value) {
+        case '.':
+            if(!displayValue.includes('.')) updateMainDisplay(value);
+            break;
+        case 'clear': 
+            clearMainDisplay();
+            break;
+        case '=': 
+            let result = calculateResults(displayValue);
+            updateSecDisplay();
+            clearMainDisplay();
+            updateMainDisplay(result);
+            break;
+        default: 
+            if(displayValue) {
+                updateMainDisplay(value);
+                operator = value;
+            }
+    }
+}
+
+// const btns = document.querySelectorAll('.button');
 
 // function to operate
-function operate(op, n1, n2) {
+function operate(a, operator, b) {
+    a = Number(a);
+    b = Number(b);
 
-    switch(op) {
-        case '+':
-            return n1 + n2;
-        case '-':
-            return n1 - n2;
+    switch (operator) {
+        case '×':
+            return a * b;
         case '÷':
-            console.log(num1 / num2);
-            return n1 / n2;
-        case '×': 
-        console.log(n1 * n2);
-            return n1 * n2;
+            return a / b;
+        case '+':
+            return a + b;
+        case '-':
+            return a - b;
+        default:
+            throw new Error(`Unsupported operator: ${operator}`);
     }
+}
+
+function calculateResults(input = '2+9÷3-5×2×3') {
+    arr = input.match(/\d+|[×÷+\-]/g);
+    const operators = [
+        ['×', '÷'], // calc first
+        ['+', '-']  // calc after
+    ];
+
+    for (const ops of operators) {
+        let i = 0;
+        while (i < arr.length) {
+            if (ops.includes(arr[i])) {
+                const a = arr[i - 1];
+                const operator = arr[i];
+                const b = arr[i + 1];
+
+                // perform the calc
+                const result = operate(a, operator, b);
+
+                // replace the three elements with the result
+                arr.splice(i - 1, 3, result.toString());
+
+                i = Math.max(0, i - 2);
+            } else {
+                i++;
+            }
+        }
+    }
+    return arr;
 }

@@ -58,7 +58,7 @@ body {
     grid-row: 5 / 6;
 }
 
-#substract {
+#subtract {
     grid-column: 4 / 5;
     grid-row: 4 / 5;
 }
@@ -111,12 +111,12 @@ body {
     user-select: none;
 }
 
-#add, #substract, #multiply, #divide, #result {
+#add, #subtract, #multiply, #divide, #result {
     background-color: #171f29;
     color: #fff;
 }
 
-#add:hover, #substract:hover, #multiply:hover, #divide:hover, #result:hover {
+#add:hover, #subtract:hover, #multiply:hover, #divide:hover, #result:hover {
     background-color: #0d131a;
 }
 
